@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+const { execSync } = require('node:child_process');
+let battery = parseInt(execSync("acpi -b | awk '{print $4}'  |cut -d '%' -f 1", {encoding: 'utf-8'}));
+let icon = battery > 90 ? '' : battery > 75 ? '' : battery > 50 ? '' : battery > 25 ? '' : '';
+let charging = execSync("acpi -a | awk -F: '{print $2}'", {encoding: 'utf-8'}).trim() == 'on-line'
+console.log(JSON.stringify({battery, icon, charging}));

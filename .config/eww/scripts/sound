@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+const { execSync } = require('node:child_process');
+let volume = execSync("pactl -- get-sink-volume @DEFAULT_SINK@", {encoding: 'utf-8'}).trim().match(/Volume:.+\/\s+(\d+%)/)[1];
+console.log(JSON.stringify({volume}));

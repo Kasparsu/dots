@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+const { execSync } = require('node:child_process');
+let workspaces = JSON.parse(execSync('hyprctl workspaces -j', {encoding: 'utf-8'}));
+let clients = JSON.parse(execSync('hyprctl clients -j', {encoding: 'utf-8'}));
+let monitors = JSON.parse(execSync('hyprctl monitors -j', {encoding: 'utf-8'}));
+let icons = {
+    "code": "",
+    "firefox": "",
+    "kitty": "",
+    "org.kde.dolphin": '',
+    "null": "",
+    "steam": ""
+}
+workspaces = workspaces.sort((wa,wb) => wa.id - wb.id).map(w => { 
+    let client = w.lastwindow != '0x0' ? clients.find(c => c.address == w.lastwindow).class.toLowerCase() : 'null';
+    return { 
+        client: client,
+        active: w.id == monitors[0].activeWorkspace.id,
+        icon: icons[client] ? icons[client] : '?'
+    }
+});
+console.log(JSON.stringify(workspaces));

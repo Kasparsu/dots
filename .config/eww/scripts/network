@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+const { execSync } = require('node:child_process');
+let wifis = execSync(`nmcli device wifi`, {encoding: 'utf-8'}).split('\n');
+wifis = wifis.splice(1,wifis.length-2);
+let active = false;
+for(key in wifis){
+    wifis[key] = wifis[key].split('  ').map(val => val.trim()).filter(val => val!='');
+    if(wifis[key][0] == '*'){
+        active = wifis[key] = {
+            active: true,
+            mac: wifis[key][1],
+            ssid: wifis[key][2],
+            mode: wifis[key][3],
+            channel: wifis[key][4],
+            rate: wifis[key][5],
+            signal: wifis[key][6],
+            bars: wifis[key][7],
+            security: wifis[key][8],
+
+        }
+    } else {
+        wifis[key] = {
+            active: false,
+            mac: wifis[key][0],
+            ssid: wifis[key][1],
+            mode: wifis[key][2],
+            channel: wifis[key][3],
+            rate: wifis[key][4],
+            signal: wifis[key][5],
+            bars: wifis[key][6],
+            security: wifis[key][7],
+        }
+    }
+}
+
+console.log(JSON.stringify({wifis, active}));

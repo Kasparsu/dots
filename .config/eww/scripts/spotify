@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+const { execSync } = require('node:child_process');
+let play = false;
+let shuffle = false;
+let repeat = false;
+let status = false;
+let track = false;
+try {
+shuffle = execSync("playerctl shuffle", {encoding: 'utf-8'}).trim();
+let replay = execSync("playerctl loop", {encoding: 'utf-8'}).trim();
+if(shuffle === 'On'){
+    shuffle = true;
+} else {
+    shuffle = false;
+}
+
+if(replay != 'None'){
+    repeat = true;
+}
+status = execSync("playerctl status", {encoding: 'utf-8'}).trim();
+album = execSync("playerctl metadata album", {encoding: 'utf-8'}).trim();
+track = execSync("playerctl metadata title", {encoding: 'utf-8'}).trim();
+track = track + ' - ' + album;
+play = true;
+
+} catch(e){
+
+    play = false;
+    shuffle = false;
+    repeat = false;
+    status = false;
+    track = false;
+}
+
+//track = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+console.log(JSON.stringify({play, repeat, shuffle, status, track}));
